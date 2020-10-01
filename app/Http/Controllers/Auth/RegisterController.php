@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Models\DocumentType;
 
 class RegisterController extends Controller
 {
@@ -22,6 +23,12 @@ class RegisterController extends Controller
     */
 
     use RegistersUsers;
+
+    public function showRegistrationForm()
+    {
+        $documentTypes = DocumentType::all();
+        return view('auth.register',['documentTypes'=>$documentTypes]);
+    }
 
     /**
      * Where to redirect users after registration.
@@ -49,7 +56,14 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'document_type'  => ['required','exists:document_types,id'],
+            'document_number'  => ['required','string','max:14'],
+            'father_last_name'  => ['required','string','max:255'],
+            'mother_last_name'  => ['required','string','max:255'],
+            'first_name'  => ['required','string','max:255'],
+            'born_date'  => ['required','date_format:d/m/Y'],
+            'phone'  => ['required','numeric','digits:9'],
+            'gender' => ['required', 'in:M,F'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -63,10 +77,12 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+   
+        $data['document_type_id'] = $data['document_type'];
+        $data['last_name'] = $data['father_last_name'].' '.$data['mother_last_name'];
+        $data['password'] = Hash::make($data['password']);
+        $data['born_date'] = date('Y-m-d', strtotime(str_replace('-', '/', $data['born_date'])));
+       
+        return User::create($data);
     }
 }

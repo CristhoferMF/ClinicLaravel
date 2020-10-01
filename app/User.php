@@ -10,13 +10,25 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Rol','rol_user', 'user_id', 'rol_id');
+    }
+
+    public function tipoDocumento()
+    {
+        return $this->hasOne('App\Models\TipoDocumento');
+    }
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'document_type_id', 'document_number', 'last_name',
+        'first_name', 'born_date',
+        'phone', 'gender', 'email','password',
     ];
 
     /**

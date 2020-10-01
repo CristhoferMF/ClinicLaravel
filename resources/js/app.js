@@ -17,3 +17,4 @@ try {
  */
 
 //require('./components/Example');
+require('./components/FormDatePicker');

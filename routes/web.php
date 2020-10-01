@@ -14,9 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('login2', function () {
-    return view('login2');
-});
 Auth::routes();
+
+Route::group(['prefix' => 'admin'], function () {
+    Route::resource('sedes', 'ClinicsController',[
+        'only' => ['index','store','edit']
+    ]);
+});
+
 
 Route::get('/home', 'HomeController@index')->name('home');

@@ -2,12 +2,34 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
+// Bootstrap
+//@import './bootstrap/bootstrap.scss';
+
 // Variables
 @import 'variables';
 
-@import './sbadmin2/sbadmin2';
+// Sbadmin
+@import './sbadmin/sbadmin.scss';
 
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+#datepicker-container{
+  display: flex;
+  flex:1;
+
+  .react-datepicker-wrapper{
+    display:flex;
+    flex:1 1;
+  }
+  .invalid-feedback{
+    display: block;
+  }
+}
+.form-register{
+  .form-control{
+    font-size: $font-size-sm;
+    height: $font-size-base * 2.5;
+  }
 }
