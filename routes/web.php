@@ -17,9 +17,35 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::group(['prefix' => 'admin'], function () {
+    
+    Route::get('sedes/estadisticas',function(){
+        return 'estadisticas';
+    });
+
     Route::resource('sedes', 'ClinicsController',[
-        'only' => ['index','store','edit']
+        'except' => ['create'],
+        'names' => [
+            'index' => 'clinics.index',
+            'store' => 'clinics.store',
+            'edit' => 'clinics.edit',
+            'update' => 'clinics.update',
+            'destroy' => 'clinics.destroy',
+            'show' => 'clinics.show',
+        ]
     ]);
+    
+    Route::get('especialidades/datatables','SpecialtiesController@anyData')->name('specialties.datatables.data');
+    Route::resource('especialidades', 'SpecialtiesController',[
+        'only' => ['index','store','edit','update'],
+        'names' => [
+            'index' => 'specialties.index',
+            'store' => 'specialties.store',
+            'edit' => 'specialties.edit',
+            'show' => 'specialties.show',
+            'update' => 'specialties.update',
+        ]
+    ]);
+
 });
 
 

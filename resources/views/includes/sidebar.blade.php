@@ -24,6 +24,46 @@
 
     <!-- Heading -->
     <div class="sidebar-heading">
+        Administración
+    </div>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-clinics"
+            aria-expanded="true" aria-controls="collapse-clinics">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Sedes</span>
+        </a>
+        <div id="collapse-clinics" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Más opciones:</h6>
+                <a class="collapse-item" href="{{route('clinics.index')}}">Administrar Sedes</a>
+                <a class="collapse-item" href="{{route('clinics.index')}}">Estadisticas</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-specialty"
+            aria-expanded="true" aria-controls="collapse-specialty">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Especialidades</span>
+        </a>
+        <div id="collapse-specialty" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Más opciones:</h6>
+                <a class="collapse-item" href="{{route('specialties.index')}}">Admin Especialidades</a>
+                <a class="collapse-item" href="{{route('specialties.index')}}">Estadisticas</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- Heading -->
+    <div class="sidebar-heading">
         Interface
     </div>
 

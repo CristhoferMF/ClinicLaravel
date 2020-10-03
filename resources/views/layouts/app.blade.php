@@ -20,6 +20,7 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     @yield('styles')
+    @notifyCss
 </head>
 
 <body class="@yield('body-class')">
@@ -56,7 +57,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; Sistema de Citas Medicas 2020</span>
                     </div>
                 </div>
             </footer>
@@ -68,9 +69,12 @@
     </div>
     <!-- End of Page Wrapper -->
 
+    @include('notify::messages')
+    
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
     @yield('scripts')
+    @notifyJs
 </body>
 
 </html>

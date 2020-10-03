@@ -152,12 +152,13 @@ return [
 		'first_name'  => 'nombres',
 		'born_date'  => 'fecha de nacimiento',
 		'phone'  => 'celular',
-		'gender' => 'sexo',
+		'gender' => 'genero',
 		'email' => 'correo electrónico',
 		'password' => 'contraseña',
 		'address' => 'dirección',
 		'description' =>  'descripción',
-		'status' => 'estado'
+		'status' => 'estado',
+		'name' => 'nombre'
 	],
 	
 ];

@@ -16,8 +16,12 @@ class ClinicsController extends Controller
     public function index()
     {
         //
-        $clinics = Clinic::all();
-        return view('clinics.index')->with(['clinics'=>$clinics]);
+        $clinics = Clinic::getNotDeleted()->get();
+    
+        return view('clinics.index')->with([
+            'clinics' => $clinics,
+            'clinic' => new Clinic()
+        ]);
     }
 
     /**
@@ -40,22 +44,18 @@ class ClinicsController extends Controller
     {
         
         $ClinicValidated = $request->validated();
-        $alert = (object) [];
 
         try {
             $clinic = Clinic::create($ClinicValidated);
-            $alert->type = 'success';
-            $alert->message = 'La Sede fue añadida con éxito';
+            notify()->success('La operación de crear una sede fue realizada con éxito','Se creo la sede');
 
         } catch (\Illuminate\Database\QueryException $exception) {
             $errorInfo = $exception->errorInfo;
-            $alert->message = 'La Sede fue añadida con éxito';
-            $alert->type = 'danger';
+            notify()->error($errorInfo);
 
         }
 
-        \Session::flash('alert',$alert);
-        return redirect(route('sedes.index'));
+        return redirect(route('clinics.index').'#clinics-table');
 
     }
 
@@ -68,6 +68,12 @@ class ClinicsController extends Controller
     public function show($id)
     {
         //
+        //
+        $clinic = Clinic::getNotDeleted()->find($id);
+        
+        if (empty($clinic)) { abort(404); }
+
+        return view('clinics.show')->with(['clinic' => $clinic]);
     }
 
     /**
@@ -79,7 +85,11 @@ class ClinicsController extends Controller
     public function edit($id)
     {
         //
-        return view('clinics.edit')->with(['id' => 1]);
+        $clinic = Clinic::getNotDeleted()->find($id);
+        
+        if (empty($clinic)) { abort(404); }
+
+        return view('clinics.edit')->with(['clinic' => $clinic]);
     }
 
     /**
@@ -89,9 +99,26 @@ class ClinicsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreClinicRequest $request, $id)
     {
-        //
+        
+        try {
+            $clinic = Clinic::find($id);
+            $clinic->fill($request->all());
+            $clinic->save();
+
+            notify()->success('La operación de editar una sede fue realizada con éxito','Se actualizo la sede');
+
+            return redirect(route('clinics.index'));
+
+        } catch (\Illuminate\Database\QueryException $exception) {
+
+            notify()->error($exception->errorInfo);
+
+            return redirect()->back();
+            
+        }
+
     }
 
     /**
@@ -103,5 +130,18 @@ class ClinicsController extends Controller
     public function destroy($id)
     {
         //
+        try {
+            $clinic = Clinic::find($id);
+            $clinic->status = 'deleted';
+            $clinic->save();
+
+            notify()->info('La operación de eliminar la sede fue realizada con éxito','Se eliminó la sede');
+
+        } catch (\Illuminate\Database\QueryException $exception) {
+            $errorInfo = $exception->errorInfo;
+            notify()->error($errorInfo);
+        }
+
+        return redirect(route('clinics.index').'#clinics-table');
     }
 }
