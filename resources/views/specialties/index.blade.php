@@ -1,16 +1,17 @@
 @extends('layouts.app')
 
-
 @section('scripts')
-<script src="{{asset('/vendor/datatables/jquery.dataTables.min.js')}}"></script>
-<script src="{{asset('/vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
 <script>
     $(function() {
         $('#table-specialties').DataTable({
             processing: true,
-            responsive:true,
             serverSide: true,
-            ajax: '/admin/especialidades/datatables',
+            ajax: "{{route('specialties.datatables.data')}}",
+            columnDefs: [
+                { width : "10rem", targets: 1 },
+                { width : "15%", targets: 4 },
+                { width : "120px", targets: 5 },
+            ],
             columns: [
                 { data: 'id', name: 'id' },
                 { data: 'clinic.name', name: 'clinic.name' },
@@ -24,33 +25,12 @@
 </script>
 @endsection
 
-@section('styles')
-<link rel="stylesheet" href="{{asset('/vendor/datatables/dataTables.bootstrap4.min.css')}}">
-@endsection
-
-
 @section('content')
     <h1 class="h3 text-gray-800 mb-4">Especialidades</h1>
-    <div class="row">
-        <div class="col-12 col-md-6">
-            <div class="card shadow mb-4">
-                <div class="card-header">
-                    <h6 class="text-primary font-weight-bold m-0">Agregar Especialidad</h6>
-                </div>
-                <div class="card-body">
-                    @include('specialties.form',[
-                        'method' => 'POST',
-                        'URL' => route('specialties.store'),
-                        'specialty' => $specialty
-                    ])
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-6"></div>
-    </div>
+    
     <div class="row">
         <div class="col-12">
-            <div class="card">
+            <div class="card mb-4 shadow">
                 <div class="card-header">
                     <h6 class="text-primary font-weight-bold m-0">Todas las especialidades</h6>
                 </div>
@@ -83,4 +63,30 @@
             </div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h6 class="text-primary font-weight-bold m-0">Agregar Especialidad</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4 d-lg-block text-center d-none">
+                            <img class="img-fluid px-3 px-sm-4 mt-4" style="max-height: 12rem" 
+                            src={{asset('img/undraw_medicine_b1ol.svg')}} alt="">
+                        </div>
+                        <div class="col-lg-8">
+                            @include('specialties.form',[
+                                'method' => 'POST',
+                                'URL' => route('specialties.store'),
+                                'specialty' => $specialty
+                            ])
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection

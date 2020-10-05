@@ -84,6 +84,27 @@ return [
             'model'   => 'connect',
             'title'   => 'User Updated',
         ],
+        'create' => [
+            'message' => 'Se añadio un nuevo registro',
+            'type' => 'success',
+            'icon' => 'flaticon2-check-mark',
+            'model' => 'toast',
+            'title' => 'Crear: Operación exitosa'
+        ],
+        'update' => [
+            'message' => 'Se guardarón los cambios del registro',
+            'type' => 'success',
+            'icon' => 'flaticon2-reload',
+            'model' => 'toast',
+            'title' => 'Actualizar: Operación exitosa'
+        ],
+        'destroy' => [
+            'message' => 'Se elimino el registro',
+            'type' => 'success',
+            'icon' => 'flaticon2-trash',
+            'model' => 'toast',
+            'title' => 'Eliminar: Operación exitosa'
+        ]
     ],
 
 ];

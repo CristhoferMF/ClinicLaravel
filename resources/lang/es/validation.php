@@ -150,6 +150,7 @@ return [
 		'father_last_name'  => 'apellido paterno',
 		'mother_last_name'  => 'apellido materno',
 		'first_name'  => 'nombres',
+		'last_name'  => 'apellidos',
 		'born_date'  => 'fecha de nacimiento',
 		'phone'  => 'celular',
 		'gender' => 'genero',

@@ -13,4 +13,5 @@ class Specialty extends Model
     {
         return $this->belongsTo('App\Models\Clinic');
     }
+    
 }

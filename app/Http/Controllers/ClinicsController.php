@@ -16,11 +16,11 @@ class ClinicsController extends Controller
     public function index()
     {
         //
-        $clinics = Clinic::getNotDeleted()->get();
+        $clinics = Clinic::all();
     
         return view('clinics.index')->with([
             'clinics' => $clinics,
-            'clinic' => new Clinic()
+            '_clinic' => new Clinic()
         ]);
     }
 
@@ -51,7 +51,7 @@ class ClinicsController extends Controller
 
         } catch (\Illuminate\Database\QueryException $exception) {
             $errorInfo = $exception->errorInfo;
-            notify()->error($errorInfo);
+            notify()->error($errorInfo[2]);
 
         }
 
@@ -69,11 +69,13 @@ class ClinicsController extends Controller
     {
         //
         //
-        $clinic = Clinic::getNotDeleted()->find($id);
+        $clinic = Clinic::find($id);
         
         if (empty($clinic)) { abort(404); }
 
-        return view('clinics.show')->with(['clinic' => $clinic]);
+        $countEspecialidades = $clinic->countSpecialties();
+
+        return view('clinics.show')->with(['clinic' => $clinic, 'countEspecialidades' => $countEspecialidades]);
     }
 
     /**
@@ -85,7 +87,7 @@ class ClinicsController extends Controller
     public function edit($id)
     {
         //
-        $clinic = Clinic::getNotDeleted()->find($id);
+        $clinic = Clinic::find($id);
         
         if (empty($clinic)) { abort(404); }
 
@@ -112,11 +114,8 @@ class ClinicsController extends Controller
             return redirect(route('clinics.index'));
 
         } catch (\Illuminate\Database\QueryException $exception) {
-
-            notify()->error($exception->errorInfo);
-
+            notify()->error($exception->errorInfo[2]);
             return redirect()->back();
-            
         }
 
     }
@@ -132,14 +131,18 @@ class ClinicsController extends Controller
         //
         try {
             $clinic = Clinic::find($id);
-            $clinic->status = 'deleted';
-            $clinic->save();
-
+            
+            if($clinic->countSpecialties()){
+                notify()->error('Hay especialidades en este sede. Borre las especialidades primero.');
+                return redirect()->back();
+            }
+            
+            $clinic->delete();
             notify()->info('La operación de eliminar la sede fue realizada con éxito','Se eliminó la sede');
 
         } catch (\Illuminate\Database\QueryException $exception) {
-            $errorInfo = $exception->errorInfo;
-            notify()->error($errorInfo);
+
+            notify()->error($exception->errorInfo[2]);
         }
 
         return redirect(route('clinics.index').'#clinics-table');

@@ -22,6 +22,7 @@ class CreateSpecialtiesTable extends Migration
             $table->timestamps();
 
             $table->foreign('clinic_id')->references('id')->on('clinics');
+            $table->unique(['clinic_id','name']);
         });
     }
 

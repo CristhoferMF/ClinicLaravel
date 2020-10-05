@@ -18,34 +18,17 @@ Auth::routes();
 
 Route::group(['prefix' => 'admin'], function () {
     
-    Route::get('sedes/estadisticas',function(){
-        return 'estadisticas';
-    });
+    Route::resource('clinics', 'ClinicsController',[
+        'except' => ['create']
+    ]);
 
-    Route::resource('sedes', 'ClinicsController',[
-        'except' => ['create'],
-        'names' => [
-            'index' => 'clinics.index',
-            'store' => 'clinics.store',
-            'edit' => 'clinics.edit',
-            'update' => 'clinics.update',
-            'destroy' => 'clinics.destroy',
-            'show' => 'clinics.show',
-        ]
+    /* Specialties Resource */
+    Route::get('specialties/datatables/data','SpecialtiesController@datatable')->name('specialties.datatables.data');
+    Route::resource('specialties', 'SpecialtiesController',[
+        'except' => ['create']
     ]);
     
-    Route::get('especialidades/datatables','SpecialtiesController@anyData')->name('specialties.datatables.data');
-    Route::resource('especialidades', 'SpecialtiesController',[
-        'only' => ['index','store','edit','update'],
-        'names' => [
-            'index' => 'specialties.index',
-            'store' => 'specialties.store',
-            'edit' => 'specialties.edit',
-            'show' => 'specialties.show',
-            'update' => 'specialties.update',
-        ]
-    ]);
-
+    Route::resource('doctors', 'DoctorsController');
 });
 
 
