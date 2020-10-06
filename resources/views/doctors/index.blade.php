@@ -9,6 +9,7 @@
                 ajax: "{{route('doctors.datatables.data')}}",
                 columnDefs: [
                     { width : "7rem", targets: 2 },
+                    { width : "4rem", targets: 5 },
                     { width : "15%", targets: 6 },
                     { width : "115px", targets: 7 },
                 ],
@@ -53,6 +54,31 @@
                                     <th>Acciones</th>
                                 </tr>
                                 </thead>
+                                <tbody>
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Filtros:</th>
+                                        <td></td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm my-2" placeholder="N° Documento"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control form-control-sm my-2" placeholder="Apellidos y Nombres"/>
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <select name="" class="form-control form-control-sm my-2">
+                                                <option value="">Estado</option>
+                                                <option value="active">Activo</option>
+                                                <option value="inactive">Inactivo</option>
+                                            </select>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
                         </table>
                     </div>
                 </div>

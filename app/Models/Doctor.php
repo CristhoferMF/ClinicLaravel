@@ -19,10 +19,11 @@ class Doctor extends Model
     public static function getDoctorsWithDocumentName(){
         return Doctor::with(['documentType' => function ($query) {
             return $query->select(['id','name']);
-        }])->get();
+        }]);
     }
 
     public static function anyDataDatatable(){
+
         $doctors = Doctor::getDoctorsWithDocumentName();
 
         return DataTables::of($doctors)
@@ -32,12 +33,18 @@ class Doctor extends Model
                 ->addColumn('name', function ($doctor){
                     return \Str::upper($doctor->last_name." ".$doctor->first_name); })
                 ->addColumn('actions','doctors.includes.actions')
+                ->filterColumn('status', function($query, $keyword) {
+                    $query->where('status',$keyword);
+                })
+                ->filterColumn('name', function($query, $keyword) {
+                    $query->whereRaw("CONCAT(doctors.last_name,' ',doctors.first_name) like ?", ["%{$keyword}%"]);
+                })
                 ->rawColumns(['actions'])
                 ->setRowClass(function ($doctor) {
                     if($doctor->status == 'inactive'){
                         return 'table-warning';
                     }
                 })
-                ->toJson();
+                ->make(true);
     }
 }

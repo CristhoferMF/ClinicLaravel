@@ -3,10 +3,18 @@
 @section('scripts')
 <script>
     $(function() {
-        $('#table-specialties').DataTable({
+        $('.filter select').change(function(){
+            table.draw();
+        });
+
+        var table = $('#table-specialties').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{route('specialties.datatables.data')}}",
+            ajax: {
+                url: "{{route('specialties.datatables.data')}}",
+                data: function (d){
+                }
+            },
             columnDefs: [
                 { width : "10rem", targets: 1 },
                 { width : "15%", targets: 4 },
@@ -48,13 +56,22 @@
                                 </tr>
                             </thead>
                             <tfoot class="">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Sede</th>
-                                    <th>Nombre</th>
-                                    <th>Descripcion</th>
-                                    <th>Fecha de creación</th>
-                                    <th>Acciones</th>
+                                <tr class="filter">
+                                    <th>Filtrar</th>
+                                    <th>
+                                        <select name="" id="filter-select-clinic" class="form-control form-control-sm my-2">
+                                            <option value="">SEDES</option>
+                                            @foreach ($clinics as $clinic)
+                                                <option value="{{$clinic->id}}">{{$clinic->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </th>
+                                    <th>
+                                        <input type="text" class="form-control form-control-sm my-2" placeholder="Especialidad">
+                                    </th>
+                                    <th></th>
+                                    <th></th>
+                                    <th></th>
                                 </tr>
                             </tfoot>
                         </table>
