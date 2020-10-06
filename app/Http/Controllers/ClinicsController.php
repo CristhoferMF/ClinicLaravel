@@ -47,7 +47,7 @@ class ClinicsController extends Controller
 
         try {
             $clinic = Clinic::create($ClinicValidated);
-            notify()->success('La operación de crear una sede fue realizada con éxito','Se creo la sede');
+            notify()->preset('create');
 
         } catch (\Illuminate\Database\QueryException $exception) {
             $errorInfo = $exception->errorInfo;
@@ -109,7 +109,7 @@ class ClinicsController extends Controller
             $clinic->fill($request->all());
             $clinic->save();
 
-            notify()->success('La operación de editar una sede fue realizada con éxito','Se actualizo la sede');
+            notify()->preset('update');
 
             return redirect(route('clinics.index'));
 
@@ -138,8 +138,8 @@ class ClinicsController extends Controller
             }
             
             $clinic->delete();
-            notify()->info('La operación de eliminar la sede fue realizada con éxito','Se eliminó la sede');
-
+            notify()->preset('destroy');
+            
         } catch (\Illuminate\Database\QueryException $exception) {
 
             notify()->error($exception->errorInfo[2]);

@@ -13,7 +13,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item active">
+    <li class="nav-item">
         <a class="nav-link" href="index.html">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
@@ -55,6 +55,23 @@
                 <h6 class="collapse-header">Más opciones:</h6>
                 <a class="collapse-item" href="{{route('specialties.index')}}">Admin Especialidades</a>
                 <a class="collapse-item" href="{{route('specialties.index')}}">Estadisticas</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - Pages Collapse Menu -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-doctors"
+            aria-expanded="true" aria-controls="collapse-doctors">
+            <i class="fas fa-fw fa-cog"></i>
+            <span>Doctores</span>
+        </a>
+        <div id="collapse-doctors" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Más opciones:</h6>
+                <a class="collapse-item active" href="{{route('doctors.index')}}">Admin Doctores</a>
+                <a class="collapse-item" href="#">Disponibilidad</a>
+                <a class="collapse-item" href="#">Estadisticas</a>
             </div>
         </div>
     </li>

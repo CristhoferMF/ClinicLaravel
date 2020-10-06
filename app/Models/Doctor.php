@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Yajra\Datatables\Datatables;
+use Carbon\Carbon;
 
 class Doctor extends Model
 {
@@ -12,5 +14,30 @@ class Doctor extends Model
     public function documentType()
     {
         return $this->belongsTo('App\Models\DocumentType')->withDefault();
+    }
+
+    public static function getDoctorsWithDocumentName(){
+        return Doctor::with(['documentType' => function ($query) {
+            return $query->select(['id','name']);
+        }])->get();
+    }
+
+    public static function anyDataDatatable(){
+        $doctors = Doctor::getDoctorsWithDocumentName();
+
+        return DataTables::of($doctors)
+                ->editColumn('created_at',function ($doctor) {
+                    return Carbon::parse($doctor->created_at)->diffForHumans(Carbon::now());
+                })
+                ->addColumn('name', function ($doctor){
+                    return \Str::upper($doctor->last_name." ".$doctor->first_name); })
+                ->addColumn('actions','doctors.includes.actions')
+                ->rawColumns(['actions'])
+                ->setRowClass(function ($doctor) {
+                    if($doctor->status == 'inactive'){
+                        return 'table-warning';
+                    }
+                })
+                ->toJson();
     }
 }

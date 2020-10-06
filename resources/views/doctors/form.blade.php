@@ -3,24 +3,14 @@
     @csrf
     <div class="form-group row">
         <div class="input-group col-sm-6 mb-3 mb-sm-0">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <i class="fas fa-id-card"></i>
-                </span>
-            </div>
             <select type="text" class="form-control small" name="document_type_id">
                 <option value="">Tipo de Documento</option>
                 @foreach ($documentTypes as $document)
-                    <option value="{{$document->id}}" {{ old('document_type_id',$doctor->documentType->name) == $document->id ? 'selected' : '' }}>{{$document->name}}</option>
+                    <option value="{{$document->id}}" {{ old('document_type_id',$doctor->documentType->id) == $document->id ? 'selected' : '' }}>{{$document->name}}</option>
                 @endforeach
             </select>
         </div>
         <div class="input-group col-sm-6">
-            <div class="input-group-prepend">
-                <span class="input-group-text">
-                    <i class="fas fa-hashtag"></i>
-                </span>
-            </div>
             <input type="text" class="d-block form-control" maxlength="15"
                 value="{{ old('document_number',$doctor->document_number) }}" name="document_number" placeholder="N. de documento">
         </div>
@@ -49,7 +39,7 @@
             <select name="status" class="form-control">
                 <option value="">Estado *</option>
                 <option value="inactive" {{ old('status',$doctor->status) == 'inactive' ? 'selected' : '' }}>Inactivo</option>
-                <option value="active"   {{ old('status',$doctor->status) == 'inactive' ? 'selected' : '' }}>Activo</option>
+                <option value="active"   {{ old('status',$doctor->status) == 'active' ? 'selected' : '' }}>Activo</option>
             </select>
         </div>
     </div>

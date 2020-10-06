@@ -28,6 +28,8 @@ Route::group(['prefix' => 'admin'], function () {
         'except' => ['create']
     ]);
     
+    /* Doctors Resource */
+    Route::get('doctors/datatables/data','DoctorsController@datatable')->name('doctors.datatables.data');
     Route::resource('doctors', 'DoctorsController');
 });
 

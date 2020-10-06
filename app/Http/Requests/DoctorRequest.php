@@ -25,7 +25,7 @@ class DoctorRequest extends FormRequest
     {
         return [
             'document_type_id'=> ['required','exists:document_types,id'],
-            'document_number' => ['required','integer'],
+            'document_number' => ['required','integer','unique:doctors,document_number,'.$this->route()->doctor],
             'last_name' => ['required','string'],
             'first_name'=> ['required','string'],
             'gender' => ['required','in:M,F'],

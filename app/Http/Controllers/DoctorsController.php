@@ -28,6 +28,16 @@ class DoctorsController extends Controller
     }
 
     /**
+     * 
+     * 
+     * @return \Iluminate\Http\JsonResponse;
+     */
+    public function datatable(){
+
+        return Doctor::anyDataDatatable();
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -65,6 +75,13 @@ class DoctorsController extends Controller
     public function show($id)
     {
         //
+        $doctor = Doctor::with('documentType')->find($id);
+        
+        if(empty($doctor)) { abort(404); }
+
+        return view('doctors.show')->with([
+            'doctor' => $doctor
+        ]);
     }
 
     /**
@@ -76,6 +93,15 @@ class DoctorsController extends Controller
     public function edit($id)
     {
         //
+        $doctor = Doctor::find($id);
+        $documentTypes = DocumentType::all();
+        
+        if(empty($doctor)) { abort(404); }
+
+        return view('doctors.edit')->with([
+            'doctor' => $doctor,
+            'documentTypes' => $documentTypes,
+        ]);
     }
 
     /**
@@ -85,9 +111,18 @@ class DoctorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(DoctorRequest $request, $id)
     {
         //
+        $validated = $request->validated();
+
+        $doctor = Doctor::find($id);
+        $doctor->fill($validated);
+        $doctor->save();
+
+        notify()->preset('update');
+
+        return redirect()->route('doctors.index');
     }
 
     /**
@@ -99,5 +134,10 @@ class DoctorsController extends Controller
     public function destroy($id)
     {
         //
+        Doctor::destroy($id);
+
+        notify()->preset('destroy');
+
+        return redirect()->route('doctors.index');
     }
 }

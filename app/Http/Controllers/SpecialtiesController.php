@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Specialty;
 use App\Models\Clinic;
-use Yajra\Datatables\Datatables;
-use Carbon\Carbon;
 use App\Http\Requests\StoreSpecialtyRequest;
 
 class SpecialtiesController extends Controller
@@ -32,23 +30,8 @@ class SpecialtiesController extends Controller
      */
     public function datatable()
     {
-        $specialties = Specialty::with(['clinic' => function($query){
-            $query->select('id','name');
-        }])->get();
-                
-        return Datatables::of($specialties)
-            ->editColumn('clinic.name',function (Specialty $specialty) {
-                return '<a href="'.route('clinics.show', ['id' => $specialty->clinic->id] ).'" target="_blank">
-                            '.$specialty->clinic->id.' - '.$specialty->clinic->name.'
-                        </a>';
-            })
-            ->editColumn('created_at',function ($specialty) {
-                $fecha = Carbon::parse($specialty->created_at)->diffForHumans(Carbon::now());
-                return $fecha;
-            })
-            ->addColumn('action','specialties.datatables.actions')
-            ->rawColumns(['action','clinic.name'])
-            ->make(true);
+        $data = Specialty::anyDataDatatable();
+        return $data;
     }
 
 
@@ -75,8 +58,8 @@ class SpecialtiesController extends Controller
     
         $specialty = Specialty::create($validated);
 
-        notify()->success('La operación de agregar una especialidad fue realizada con éxito','Se agrego una especialidad');
-        
+        notify()->preset('create');
+
         return redirect(route('specialties.index'));
     }
 
@@ -132,12 +115,13 @@ class SpecialtiesController extends Controller
             $specialty = Specialty::find($id);
             $specialty->fill($request->all());
             $specialty->save();
-            notify()->success('La operación de editar una especialidad fue realizada con éxito','Se actualizo la especialidad');
 
-            return redirect(route('specialties.index'));
+            notify()->preset('update');
+
+            return redirect()->route('specialties.index');
 
         } catch (\Illuminate\Database\QueryException $exception) {
-            notify()->error($exception->message);
+            notify()->error($exception->errorInfo[2]);
             return redirect()->back()->withInput();
         }
     }
@@ -152,8 +136,7 @@ class SpecialtiesController extends Controller
     {
         Specialty::destroy($id);
 
-        notify()->info('La operación de eliminar la especialidad fue realizada con éxito','Se eliminó la especialidad');
-
+        notify()->preset('destroy');
 
         return redirect(route('specialties.index'));
     }
