@@ -1,4 +1,6 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/js/components/form-date-picker.js": "/js/components/form-date-picker.js",
+    "/js/form-availabilities.js": "/js/form-availabilities.js"
 }

@@ -1,12 +1,8 @@
 @extends('layouts.app_without_navbar')
 @section('body-class','bg-gradient-primary')
 
-@section('styles')
-    
-@endsection
-
 @section('scripts')
-    
+    <script src="{{asset('/js/components/form-date-picker.js')}}"></script>
 @endsection
 
 @section('content')

@@ -16,10 +16,8 @@ class ClinicsController extends Controller
     public function index()
     {
         //
-        $clinics = Clinic::all();
-    
         return view('clinics.index')->with([
-            'clinics' => $clinics,
+            'clinics' => Clinic::all(),
             '_clinic' => new Clinic()
         ]);
     }
@@ -46,7 +44,7 @@ class ClinicsController extends Controller
         $ClinicValidated = $request->validated();
 
         try {
-            $clinic = Clinic::create($ClinicValidated);
+            Clinic::create($ClinicValidated);
             notify()->preset('create');
 
         } catch (\Illuminate\Database\QueryException $exception) {
@@ -68,14 +66,28 @@ class ClinicsController extends Controller
     public function show($id)
     {
         //
-        //
         $clinic = Clinic::find($id);
         
         if (empty($clinic)) { abort(404); }
 
         $countEspecialidades = $clinic->countSpecialties();
 
-        return view('clinics.show')->with(['clinic' => $clinic, 'countEspecialidades' => $countEspecialidades]);
+        return view('clinics.show', compact('clinic','countEspecialidades'));
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function specialties($id)
+    {
+        //
+        $clinic = Clinic::findOrFail($id);
+        $specialties = $clinic->specialties()->onlyName()->get();
+        
+        return $specialties;
     }
 
     /**
@@ -91,7 +103,7 @@ class ClinicsController extends Controller
         
         if (empty($clinic)) { abort(404); }
 
-        return view('clinics.edit')->with(['clinic' => $clinic]);
+        return view('clinics.edit' , compact('clinic'));
     }
 
     /**
@@ -105,13 +117,12 @@ class ClinicsController extends Controller
     {
         
         try {
-            $clinic = Clinic::find($id);
-            $clinic->fill($request->all());
+            $clinic = Clinic::find($id)->fill($request->all());
             $clinic->save();
 
             notify()->preset('update');
 
-            return redirect(route('clinics.index'));
+            return redirect()->route('clinics.index');
 
         } catch (\Illuminate\Database\QueryException $exception) {
             notify()->error($exception->errorInfo[2]);

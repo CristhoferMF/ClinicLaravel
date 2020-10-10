@@ -18,6 +18,7 @@ Auth::routes();
 
 Route::group(['prefix' => 'admin'], function () {
     
+    Route::get('clinics/{clinic}/specialties','ClinicsController@specialties')->name('clinics.specialties');
     Route::resource('clinics', 'ClinicsController',[
         'except' => ['create']
     ]);
@@ -27,10 +28,17 @@ Route::group(['prefix' => 'admin'], function () {
     Route::resource('specialties', 'SpecialtiesController',[
         'except' => ['create']
     ]);
-    
+
+    /* Doctor Availabilities */
+    Route::resource('doctors/availabilities', 'AvailabilitiesController',[
+        'as' => 'doctor'
+    ]);
+
     /* Doctors Resource */
     Route::get('doctors/datatables/data','DoctorsController@datatable')->name('doctors.datatables.data');
     Route::resource('doctors', 'DoctorsController');
+
+    
 });
 
 

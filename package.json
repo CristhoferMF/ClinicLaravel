@@ -20,12 +20,15 @@
         "popper.js": "^1.12",
         "react": "^16.2.0",
         "react-dom": "^16.2.0",
+        "react-times": "^3.1.12",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.15.2",
         "sass-loader": "^7.1.0"
     },
     "dependencies": {
         "jquery.easing": "^1.4.1",
-        "react-datepicker": "^3.2.2"
+        "react-datepicker": "^3.2.2",
+        "react-day-picker": "^7.4.8",
+        "react-timekeeper": "^2.1.3"
     }
 }

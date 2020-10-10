@@ -13,3 +13,6 @@ const mix = require('laravel-mix');
 
 mix.react('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css');
+
+mix.react('resources/js/availabilities/index.js','public/js/form-availabilities.js')
+mix.react('resources/js/components/FormDatePicker.js','public/js/components/form-date-picker.js')

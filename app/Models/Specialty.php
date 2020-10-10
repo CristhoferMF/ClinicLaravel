@@ -16,26 +16,42 @@ class Specialty extends Model
         return $this->belongsTo('App\Models\Clinic');
     }
 
+    public function createdAtParseDiffForHumans() {
+        return Carbon::parse($this->created_at)->diffForHumans(Carbon::now());
+    }
+
+    public function scopeOnlyName($query){
+        return $query->select('id','name');
+    }
+
     public static function getSpecialtiesWithClinicName(){
 
         return Specialty::with(['clinic' => function($query){
-            $query->select('id','name');
-        }])->get();
+            $query->names();
+        }]);
 
     }
+
+    public function scopeSpecialtiesByClinicId($query,$id){
+
+        return $query->whereHas('clinic', function ($query) use ($id) {
+            return $query->where('id', '=', $id);
+        });
+    }
+
     public static function anyDataDatatable(){
 
         $specialties = Specialty::getSpecialtiesWithClinicName();
                 
         return Datatables::of($specialties)
             ->editColumn('clinic.name',function (Specialty $specialty) {
-                return '<a href="'.route('clinics.show', ['id' => $specialty->clinic->id] ).'" target="_blank">
-                            '.$specialty->clinic->id.' - '.$specialty->clinic->name.'
-                        </a>';
+                return '<a href="'.route('clinics.show', ['id' => $specialty->clinic->id] ).'" target="_blank">'.$specialty->clinic->getIdAndName().'</a>';
             })
             ->editColumn('created_at',function ($specialty) {
-                $fecha = Carbon::parse($specialty->created_at)->diffForHumans(Carbon::now());
-                return $fecha;
+                return $specialty->createdAtParseDiffForHumans();
+            })
+            ->filterColumn('clinic.name',function ($query, $keyword) {
+                $query->SpecialtiesByClinicId($keyword);
             })
             ->addColumn('action','specialties.datatables.actions')
             ->rawColumns(['action','clinic.name'])

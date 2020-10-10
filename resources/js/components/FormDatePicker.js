@@ -1,6 +1,6 @@
 import React,{Fragment, useState} from 'react'
 import ReactDOM from 'react-dom';
-import { registerLocale, setDefaultLocale } from  "react-datepicker";
+import { registerLocale } from  "react-datepicker";
 import es from 'date-fns/locale/es';
 
 import DatePicker from "react-datepicker";
