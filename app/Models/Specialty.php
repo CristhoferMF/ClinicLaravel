@@ -23,7 +23,15 @@ class Specialty extends Model
     public function scopeOnlyName($query){
         return $query->select('id','name');
     }
-
+    public function scopeSelectNameAndClinicId($query){
+        return $query->select('id','name','clinic_id');
+    }
+    public function scopeGetBasicInfoClinic($query){
+        return $query->with('clinic:id,name');
+    }
+    public function scopegetFullInfoClinic($query){
+        return $query->with('clinic');
+    }
     public static function getSpecialtiesWithClinicName(){
 
         return Specialty::with(['clinic' => function($query){

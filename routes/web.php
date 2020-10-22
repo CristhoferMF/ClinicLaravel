@@ -29,9 +29,13 @@ Route::group(['prefix' => 'admin'], function () {
         'except' => ['create']
     ]);
 
+    /* Availabilities */
+    Route::get('availabilities/datatables/data','AvailabilitiesController@datatable')->name('availabilities.datatables.data');
+    Route::resource('availabilities', 'AvailabilitiesController');
+
     /* Doctor Availabilities */
-    Route::resource('doctors/availabilities', 'AvailabilitiesController',[
-        'as' => 'doctor'
+    Route::resource('doctors.availabilities', 'DoctorsAvailabilitiesController',[
+        'only' => ['index']
     ]);
 
     /* Doctors Resource */

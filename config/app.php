@@ -66,7 +66,8 @@ return [
     | ahead and set this to a sensible default for you out of the box.
     |
     */
-
+    'date_format' => 'd/m/Y',
+    'date_format_javascript' => 'DD/MM/YYYY',
     'timezone' => 'America/Bogota',
 
     /*

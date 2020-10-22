@@ -28,4 +28,6 @@
 <input type="hidden" value="{{$doctors}}" id="doctors-json">
 <input type="hidden" value="{{$clinics}}" id="clinics-json">
 <input type="hidden" value="{{route('clinics.specialties',['_id'])}}" id="URL_SPECIALTIES">
+<input type="hidden" value="{{route('availabilities.store')}}" id="AVAILABILITIES_STORE">
+<input type="hidden" value="{{route('doctors.availabilities.index',['_doctor'])}}" id="DOCTORS_AVAILABILITIES_INDEX">
 @endsection

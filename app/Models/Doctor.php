@@ -25,7 +25,10 @@ class Doctor extends Model
     {
         return $this->belongsTo('App\Models\DocumentType')->withDefault();
     }
-
+    public function availabilities()
+    {
+        return $this->hasMany('App\Models\Availability');
+    }
     public function createdAtParseDiffForHumans() {
         return Carbon::parse($this->created_at)->diffForHumans(Carbon::now());
     }
@@ -48,6 +51,12 @@ class Doctor extends Model
     public function scopeStatus($query,$status){
         return $query->where('status',$status);
     }
+    
+    public function scopeAddFullName($query){
+        return $query->selectSub(function ($query) {
+            $query->selectRaw("UPPER(CONCAT(doctors.last_name,' ',doctors.first_name))");
+        }, 'fullname');
+    }
 
     public function scopeWhereFullNameLike($query,$keyword){
         return $query->whereRaw("CONCAT(doctors.last_name,' ',doctors.first_name) like ?", ["%{$keyword}%"]);
@@ -62,6 +71,12 @@ class Doctor extends Model
         return Doctor::getDoctorsWithDocumentName()->active();
     }
 
+    public static function findOrFailAvailabilitiesActive($doctorId){
+        return Doctor::findOrFailAvailabilities($doctorId)->active();
+    }
+    public static function findOrFailAvailabilities($doctorId){
+        return Doctor::findOrFail($doctorId)->availabilities();
+    }
     public static function anyDataDatatable(){
 
         $doctors = Doctor::getDoctorsWithDocumentName();

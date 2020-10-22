@@ -159,7 +159,12 @@ return [
 		'address' => 'dirección',
 		'description' =>  'descripción',
 		'status' => 'estado',
-		'name' => 'nombre'
+		'name' => 'nombre',
+		'day' => 'día',
+		'from_hour' => 'hora inicio',
+		'to_hour' => 'hora final',
+		'from_date' => 'fecha inicio',
+		'to_date' => 'fecha final',
 	],
 	
 ];

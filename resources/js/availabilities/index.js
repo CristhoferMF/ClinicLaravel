@@ -1,10 +1,10 @@
 import axios from './axios';
-import { upperCase } from 'lodash';
+import { replace, upperCase } from 'lodash';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import FormDayAvailability from './components/FormDayAvailabilty';
+import {URL_SPECIALTIES,DOCTORS_AVAILABILITIES_INDEX} from './conf/constants'
 
-const URL_SPECIALTIES = document.getElementById('URL_SPECIALTIES').value;
 const ARRAY_DAYS = ['DOM','LUN','MAR','MIE','JUE','VIE','SAB'];
 
 function removeItemFromArr ( arr, item ) {
@@ -26,24 +26,45 @@ class Example extends Component {
             doctor_id:'',
             clinic_id:'',
             specialty_id:'',
-            days : []
+            days : [],
+            availabiltiies:[],
+            isShowAbilities:false
         }
         this.handleChange = this.handleChange.bind(this);
+        this.handleChangeDoctor = this.handleChangeDoctor.bind(this);
         this.handleChangeClinic = this.handleChangeClinic.bind(this);
         this.specialtySelectRef = React.createRef();
         this.handleChangeDay = this.handleChangeDay.bind(this);
+        this.getDoctorsAvailabilities = this.getDoctorsAvailabilities.bind(this);
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         const doctors = JSON.parse(document.getElementById('doctors-json').value);
         const clinics = JSON.parse(document.getElementById('clinics-json').value);
-        this.setState({doctors,clinics,doctor_id:doctors[0].id})
+        await this.setState({doctors,clinics,doctor_id:doctors[0].id})
+        this.getDoctorsAvailabilities();
     }
 
     handleChange(e){
         this.setState({[e.target.name]:e.target.value});
     }
+    handleChangeDoctor(e){
+        this.setState({doctor_id:e.target.value}, () => {
+            this.getDoctorsAvailabilities();
+        })
+    }
+
     
+    getDoctorsAvailabilities(){
+        const {doctor_id} = this.state;
+         
+        axios(replace(DOCTORS_AVAILABILITIES_INDEX,'_doctor',doctor_id))
+            .then( res => {
+                const {data} = res;
+                this.setState({availabiltiies:data});
+            })
+    }
+
     handleChangeClinic(e){
         const clinic_id = e.target.value;
         const selectSpecialties = this.specialtySelectRef.current
@@ -84,7 +105,7 @@ class Example extends Component {
 
     render(){
 
-        const {doctor_id,specialty_id,clinic_id,specialties,doctors,clinics} = this.state
+        const {doctor_id,specialty_id,clinic_id,specialties,doctors,clinics,isShowAbilities} = this.state
 
         return (
             <div>
@@ -92,7 +113,7 @@ class Example extends Component {
                     <div className="col-12">
                         <label htmlFor="doctor_id" >Doctor</label>  
                         <select className="form-control" id="doctor_id" name="doctor_id" value={doctor_id} 
-                            onChange={this.handleChange}>
+                            onChange={this.handleChangeDoctor}>
                             {
                                 doctors.map( (doctor,index) => {
                                     return <option key={index} value={doctor.id}>{upperCase(doctor.document_number)+" - "+upperCase(doctor.last_name+" "+doctor.first_name)}</option>
@@ -134,11 +155,35 @@ class Example extends Component {
                         }
                     </div>
                 </div>
+                <div className="form-group row">
+                    <div className="col-12">
+                        <h6 className="text-primary">Disponibilidad actual:</h6> 
+                        <div class="form-check form-check-inline">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" onChange={ (e) => {
+                                    this.setState({isShowAbilities:!isShowAbilities})
+                                }} defaultChecked={isShowAbilities} /> Mostrar
+                            </label>
+                        </div>
+                        <div className={ isShowAbilities ? 'animated--grow-in' : 'd-none'}>
+                            <ul class="list-group list-group-flush">
+                                {
+                                    this.state.availabiltiies.map( (availability) => {
+                                    return <li class="list-group-item">
+                                        {ARRAY_DAYS[availability.day]} : {availability.from_hour} - {availability.to_hour} <br/>
+                                        {availability.specialty.clinic.name} - {availability.specialty.name}
+                                        </li>                        
+                                    })
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
                 <hr></hr>
                 <div className="mt-5">
                         {
                             this.state.days.map( (day,index) => {
-                                return <FormDayAvailability day={day} doctor_id={doctor_id} specialty_id={specialty_id} />
+                                return <FormDayAvailability day={day} doctor_id={doctor_id} specialty_id={specialty_id} getDoctorsAvailabilities={this.getDoctorsAvailabilities} />
                             })
                         }
                 </div>

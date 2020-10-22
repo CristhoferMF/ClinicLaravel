@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import axios from '../../axios';
-import {ARR_DAYS} from '../../conf/constants'
+import {ARR_DAYS,AVAILABILITIES_STORE} from '../../conf/constants'
 
 export default class FormDayAvailability extends Component {
 
@@ -8,14 +8,16 @@ export default class FormDayAvailability extends Component {
         super(props)
     
         this.state = {
-            isToDateNull:false
+            isToDateNull:false,
         }
         this.formDisp = React.createRef();
         this.inputToDate = React.createRef();
         this.handleSubmitForm = this.handleSubmitForm.bind(this)
         this.handleSetToDateNull = this.handleSetToDateNull.bind(this)
     }
-
+    componentDidMount(){
+        this.props.getDoctorsAvailabilities()
+    }
     handleSetToDateNull(e){
         const isToDateNull = !this.state.isToDateNull
         const inputToDate = this.inputToDate.current
@@ -32,21 +34,68 @@ export default class FormDayAvailability extends Component {
     }
 
     handleSubmitForm(e){
-        e.preventDefault();
-        var _formData = {};
-        var formData = new FormData(this.formDisp.current);
 
-        axios.post('/admin/doctors/availabilities',formData)
+        e.preventDefault();
+        var { current:form } = this.formDisp
+        var _formData = {};
+        var formData = new FormData(form);
+
+        var alertErrors = form.getElementsByClassName('alert-danger');
+
+        for (let alert of alertErrors) {
+            alert.remove()
+        }
+
+        axios.post(AVAILABILITIES_STORE,formData)
             .then( res => {
-                console.log(res);
-                console.log(res.data);
+                const {data} = res
+                console.log(data.status);
+
+                if(data.status == 200){
+
+                    delete data.data['doctor_id']
+                    delete data.data['specialty_id']
+                    delete data.data['day']
+                    //console.log(data.data)
+
+                    this.props.getDoctorsAvailabilities()
+                    
+                    var keys = Object.keys(data.data);
+
+                    keys.forEach(key => {
+                        form.querySelector('input[name="'+key+'"]').value = ''
+                    });
+
+                }
+            })
+            .catch( error => {
+                if(error.response){
+                    var {data} = error.response
+                    const { errors } = data
+                    
+                    if(!errors){
+                        alert('Hubo un error: '+data.message);
+                        return;
+                    }
+
+                    const errorKey = Object.keys(errors)[0]
+
+                    if(errorKey){
+                        
+                        const alert = document.createElement('div');
+                        alert.classList.add('alert','alert-danger','animated--grow-in')
+                        alert.append(document.createTextNode(errors[errorKey]))
+
+                        form.append(alert);
+                    }
+                }
             })
         
         // Display the key/value pairs
         for (var pair of formData.entries()) {
             _formData[pair[0]] = pair[1]
         }
-        console.log(_formData);
+        //console.log(_formData);
     }
 
     render() {
@@ -63,26 +112,26 @@ export default class FormDayAvailability extends Component {
                     <input type="hidden" value={day} name="day"/>
                     <div className="form-group row">
                         <div className="col-md-4">
-                            <label htmlFor="from-hour">Hora Inicio:</label>
-                            <input type="text" className="form-control" name="from-hour" id="from-hour" placeholder="hh:mm AM/PM" />
+                            <label htmlFor="from_hour">Hora Inicio:</label>
+                            <input required type="text" className="form-control" name="from_hour" id="from_hour" placeholder="hh:mm AM/PM" />
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="to-hour">Hora Final:</label>
-                            <input type="text" className="form-control" name="to-hour" id="to-hour" placeholder="hh:mm AM/PM" />
+                            <label htmlFor="to_hour">Hora Final:</label>
+                            <input required type="text" className="form-control" name="to_hour" id="to_hour" placeholder="hh:mm AM/PM" />
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="max_patients">Max pacientes:</label>
-                            <input type="text" className="form-control" name="max_patients" id="max_patients" placeholder="Turnos" />
+                            <input required type="text" className="form-control" name="max_patients" id="max_patients" placeholder="Turnos" />
                         </div>
                     </div>
                     <div className="form-group row">
                         <div className="col-md-4">
-                            <label htmlFor="from-date">Fecha Inicio:</label>
-                            <input type="text" className="form-control" name="from-date" id="from-date" placeholder="dd/mm/aaaa" />
+                            <label htmlFor="from_date">Fecha Inicio:</label>
+                            <input required type="text" className="form-control" name="from_date" id="from_date" placeholder="dd/mm/aaaa" />
                         </div>
                         <div className="col-md-4">
-                            <label htmlFor="to-date">Fecha Final:</label>
-                            <input ref={this.inputToDate} type="text" className="form-control" name="to-date" id="to-date" placeholder="dd/mm/aaaa" />
+                            <label htmlFor="to_date">Fecha Final:</label>
+                            <input required ref={this.inputToDate} type="text" className="form-control" name="to_date" id="to_date" placeholder="dd/mm/aaaa" />
                             <div className="form-check pt-2">
                               <label className="form-check-label">
                                 <input type="checkbox" className="form-check-input" name="isToDateNull" value={isToDateNull} onChange={this.handleSetToDateNull} />
@@ -92,10 +141,9 @@ export default class FormDayAvailability extends Component {
                         </div>
                         <div className="col-md-4">
                             <label htmlFor="status">Estado de Disp:</label>
-                            <select className="form-control" name="status" id="status">
-                                <option value="pending">Pediente</option>
+                            <select required className="form-control" name="status" id="status">
                                 <option value="active">Activo</option>
-                                <option value="inactive">Inactivo</option>
+                                <option value="inactive" selected>Inactivo</option>
                             </select>
                         </div>
                     </div>
